@@ -860,7 +860,8 @@ public:
   //   require (VALID)
   //   ensure (VALID)
   //
-  bool traverse_clauses (ClauseIterator &) const;
+  bool traverse_clauses (ClauseIterator &, bool includeRedundant = false, bool includeAllUnits = false) const;
+ 
   bool traverse_witnesses_backward (WitnessIterator &) const;
   bool traverse_witnesses_forward (WitnessIterator &) const;
 
@@ -1238,7 +1239,7 @@ public:
 
 /*------------------------------------------------------------------------*/
 
-// Allows to traverse all remaining irredundant clauses.  Satisfied and
+// Allows to traverse all remaining irredundant and redundant clauses.  Satisfied and
 // eliminated clauses are not included, nor any derived units unless such
 // a unit literal is frozen. Falsified literals are skipped.  If the solver
 // is inconsistent only the empty clause is traversed.
@@ -1249,6 +1250,7 @@ class ClauseIterator {
 public:
   virtual ~ClauseIterator () {}
   virtual bool clause (const std::vector<int> &) = 0;
+  virtual bool redundant_clause (const std::vector<int> &) { return true; }
 };
 
 /*------------------------------------------------------------------------*/

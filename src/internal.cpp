@@ -1021,15 +1021,21 @@ bool Internal::traverse_constraint (ClauseIterator &it) {
 }
 /*------------------------------------------------------------------------*/
 
-bool Internal::traverse_clauses (ClauseIterator &it) {
+bool Internal::traverse_clauses (ClauseIterator &it, bool includeRedundant) {
   vector<int> eclause;
   if (unsat)
     return it.clause (eclause);
   for (const auto &c : clauses) {
+    bool redundant = false;
+
     if (c->garbage)
       continue;
     if (c->redundant)
-      continue;
+    {
+      redundant = true;
+      if (!includeRedundant)
+        continue;
+    }
     bool satisfied = false;
     for (const auto &ilit : *c) {
       const int tmp = fixed (ilit);
@@ -1042,8 +1048,14 @@ bool Internal::traverse_clauses (ClauseIterator &it) {
       const int elit = externalize (ilit);
       eclause.push_back (elit);
     }
-    if (!satisfied && !it.clause (eclause))
-      return false;
+
+    if (!satisfied)
+    {
+      if (redundant ? !it.redundant_clause (eclause): !it.clause (eclause))
+      {
+        return false;
+      }
+    }
     eclause.clear ();
   }
   return true;

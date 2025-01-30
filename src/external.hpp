@@ -358,7 +358,7 @@ struct External {
   // Traversal functions for the witness stack and units.  The explanation
   // in 'external.cpp' for why we have to distinguish these cases.
 
-  bool traverse_all_frozen_units_as_clauses (ClauseIterator &);
+  bool traverse_all_units_as_clauses (ClauseIterator &, bool onlyFrozen = true);
   bool traverse_all_non_frozen_units_as_witnesses (WitnessIterator &);
   bool traverse_witnesses_backward (WitnessIterator &);
   bool traverse_witnesses_forward (WitnessIterator &);

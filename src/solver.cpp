@@ -486,7 +486,7 @@ bool Solver::set (const char *arg, int val) {
   //       "can only set option 'set (\"%s\", %d)' right after initialization",
   //       arg, val);
   // }
-  printf("Warning: option set in Cadical without checking state\n");
+  printf("Warning: option set in Cadical without checking\n");
   bool res = internal->opts.set (arg, val);
   LOG_API_CALL_END ("set", arg, val, res);
 
@@ -1447,11 +1447,11 @@ void Solver::force_backtrack (size_t new_level) {
 
 /*------------------------------------------------------------------------*/
 
-bool Solver::traverse_clauses (ClauseIterator &it) const {
+bool Solver::traverse_clauses (ClauseIterator &it, bool includeRedundant, bool includeAllUnits) const {
   LOG_API_CALL_BEGIN ("traverse_clauses");
   REQUIRE_VALID_STATE ();
-  bool res = external->traverse_all_frozen_units_as_clauses (it) &&
-             internal->traverse_clauses (it) &&
+  bool res = external->traverse_all_units_as_clauses (it, !includeAllUnits) &&
+             internal->traverse_clauses (it, includeRedundant) &&
              internal->traverse_constraint (it);
   LOG_API_CALL_RETURNS ("traverse_clauses", res);
   return res;

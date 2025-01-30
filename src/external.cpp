@@ -846,14 +846,14 @@ void External::check_failing () {
 // makes a difference in terms of traversing such a unit as unit clause or
 // as unit witness.
 
-bool External::traverse_all_frozen_units_as_clauses (ClauseIterator &it) {
+bool External::traverse_all_units_as_clauses (ClauseIterator &it, bool onlyFrozen) {
   if (internal->unsat)
     return true;
 
   vector<int> clause;
 
   for (auto idx : vars) {
-    if (!frozen (idx))
+    if (onlyFrozen && !frozen (idx))
       continue;
     const int tmp = fixed (idx);
     if (!tmp)

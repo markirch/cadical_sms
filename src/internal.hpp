@@ -1382,7 +1382,7 @@ struct Internal {
 
   // Export and traverse all irredundant (non-unit) clauses.
   //
-  bool traverse_clauses (ClauseIterator &);
+  bool traverse_clauses (ClauseIterator &, bool include_redundant = false);
 
   // Export and traverse all irredundant (non-unit) clauses.
   //
