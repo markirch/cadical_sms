@@ -479,13 +479,14 @@ int Solver::get (const char *arg) {
 bool Solver::set (const char *arg, int val) {
   TRACE ("set", arg, val);
   REQUIRE_VALID_STATE ();
-  if (strcmp (arg, "log") && strcmp (arg, "quiet") &&
-      strcmp (arg, "report") && strcmp (arg, "verbose")) {
-    REQUIRE (
-        state () == CONFIGURING,
-        "can only set option 'set (\"%s\", %d)' right after initialization",
-        arg, val);
-  }
+  // if (strcmp (arg, "log") && strcmp (arg, "quiet") &&
+  //     strcmp (arg, "report") && strcmp (arg, "verbose")) {
+  //   REQUIRE (
+  //       state () == CONFIGURING,
+  //       "can only set option 'set (\"%s\", %d)' right after initialization",
+  //       arg, val);
+  // }
+  printf("Warning: option set in Cadical without checking state\n");
   bool res = internal->opts.set (arg, val);
   LOG_API_CALL_END ("set", arg, val, res);
 
