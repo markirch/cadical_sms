@@ -683,6 +683,7 @@ public:
   //   ensure (VALID)
   //
   int active () const;          // Number of active variables.
+  bool active(int var) const;   // Whether variable is active.
   int64_t redundant () const;   // Number of active redundant clauses.
   int64_t irredundant () const; // Number of active irredundant clauses.
 

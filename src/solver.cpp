@@ -1055,6 +1055,20 @@ int Solver::active () const {
   return res;
 }
 
+bool Solver::active(int var) const {
+  TRACE ("active", var);
+  REQUIRE_VALID_STATE ();
+  if (var >= (int) external->e2i.size())
+  {
+    printf("Error: no internal representation for external variable %d\n", var);
+    exit(1);
+  }
+  int idx = external->e2i[var]; // internalize
+  bool res = internal->active (idx);
+  LOG_API_CALL_RETURNS ("active", var, res);
+  return res;
+}
+
 int64_t Solver::redundant () const {
   TRACE ("redundant");
   REQUIRE_VALID_STATE ();
