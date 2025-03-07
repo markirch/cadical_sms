@@ -486,7 +486,9 @@ bool Solver::set (const char *arg, int val) {
   //       "can only set option 'set (\"%s\", %d)' right after initialization",
   //       arg, val);
   // }
-  printf("Warning: option set in Cadical without checking\n");
+
+  if (state () != CONFIGURING)
+    printf("Warning: option set in Cadical outside configuring state (undefined behaviour)\n");
   bool res = internal->opts.set (arg, val);
   LOG_API_CALL_END ("set", arg, val, res);
 
@@ -1064,6 +1066,8 @@ bool Solver::active(int var) const {
     exit(1);
   }
   int idx = external->e2i[var]; // internalize
+  if (!idx)
+    return false;
   bool res = internal->active (idx);
   LOG_API_CALL_RETURNS ("active", var, res);
   return res;
