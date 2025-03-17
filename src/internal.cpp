@@ -362,18 +362,55 @@ int Internal::propagate_assumptions () {
         res = 20;
       else if (!propagate ()) {
         // let analyze run to get failed assumptions
+        if (opts.nolearn) {
+          res = 20;
+          conflict = 0;
+          if (!level)
+          {
+            printf("Error: level 0\n");
+            exit(1);
+          }
+          backtrack (level - 1);
+          break;
+        }
         analyze ();
       } else if (!external_propagate () || unsat) { // external propagation
         if (unsat)
           continue;
         else
+        {
+          if (opts.nolearn) {
+            res = 20;
+            conflict = 0;
+            if (!level)
+            {
+              printf("Error: level 0\n");
+              exit(1);
+            }
+            backtrack (level - 1);
+            break;
+          }
           analyze ();
+        }
       } else if (satisfied ()) { // found model
         if (!external_check_solution () || unsat) {
           if (unsat)
             continue;
           else
+          {
+            if (opts.nolearn) {
+              res = 20;
+              conflict = 0;
+              if (!level)
+              {
+                printf("Error: level 0\n");
+                exit(1);
+              }
+              backtrack (level - 1);
+              break;
+            }
             analyze ();
+          }
         } else if (satisfied ())
           res = 10;
       } else if (search_limits_hit ())
@@ -1100,7 +1137,8 @@ bool Internal::traverse_constraint (ClauseIterator &it) {
 }
 /*------------------------------------------------------------------------*/
 
-bool Internal::traverse_clauses (ClauseIterator &it, bool includeRedundant) {
+bool Internal::traverse_clauses (ClauseIterator &it,
+                                 bool includeRedundant) {
   vector<int> eclause;
   if (unsat)
     return it.clause (eclause);
@@ -1109,8 +1147,7 @@ bool Internal::traverse_clauses (ClauseIterator &it, bool includeRedundant) {
 
     if (c->garbage)
       continue;
-    if (c->redundant)
-    {
+    if (c->redundant) {
       redundant = true;
       if (!includeRedundant)
         continue;
@@ -1128,10 +1165,9 @@ bool Internal::traverse_clauses (ClauseIterator &it, bool includeRedundant) {
       eclause.push_back (elit);
     }
 
-    if (!satisfied)
-    {
-      if (redundant ? !it.redundant_clause (eclause): !it.clause (eclause))
-      {
+    if (!satisfied) {
+      if (redundant ? !it.redundant_clause (eclause)
+                    : !it.clause (eclause)) {
         return false;
       }
     }

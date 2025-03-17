@@ -898,6 +898,18 @@ void Internal::analyze () {
   assert (unit_analyzed.empty ());
   assert (clause.empty ());
 
+  if (opts.nolearn)
+  {
+    // backtrack one level and then return
+    // assert (level > 0);
+    printf("Level: %d\n", level);
+    if (level > 0)
+      backtrack (level - 1);
+    conflict = 0;
+    STOP (analyze);
+    return;
+  }
+
   // First update moving averages of trail height at conflict.
   //
   UPDATE_AVERAGE (averages.current.trail.fast, num_assigned);

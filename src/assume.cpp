@@ -557,7 +557,10 @@ struct sort_assumptions_smaller {
 void Internal::sort_and_reuse_assumptions () {
   assert (opts.ilbassumptions);
   if (assumptions.empty ())
-    return;
+  {
+    backtrack(); // make more sense to assume that we want to propagate the empty assumption
+    // return
+  }
   MSORT (opts.radixsortlim, assumptions.begin (), assumptions.end (),
          sort_assumptions_positive_rank (this),
          sort_assumptions_smaller (this));
